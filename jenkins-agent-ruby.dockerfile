@@ -36,8 +36,8 @@ RUN set -ex \
 		linux-headers \
 		make \
 		ncurses-dev \
-		openssl \
-		openssl-dev \
+		libressl-dev \
+		libressl \
 		procps \
 		postgresql-dev \
 		readline-dev \
@@ -88,7 +88,6 @@ RUN set -ex \
 		bzip2 \
 		ca-certificates \
 		libffi-dev \
-		openssl-dev \
 		yaml-dev \
 		procps \
 		zlib-dev \
