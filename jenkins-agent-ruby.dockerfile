@@ -39,6 +39,7 @@ RUN set -ex \
 		openssl \
 		openssl-dev \
 		procps \
+		postgresql-dev \
 		readline-dev \
 		ruby \
 		sqlite-dev \
