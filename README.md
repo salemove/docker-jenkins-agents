@@ -1,5 +1,5 @@
 # docker-jenkins-agents
-Collection of Dockerfiles for Jenkins agents, intended for Kubernetes hosting.
+Collection of Dockerfiles for Jenkins agents, intended for use [Kubernetes hosting](https://github.com/jenkinsci/kubernetes-plugin).
 
 ## jenkins-agent-docker
 Agent based on [jenkinsci/docker-jnlp-slave](https://github.com/jenkinsci/docker-jnlp-slave) and [library/docker](https://github.com/docker-library/docker).
