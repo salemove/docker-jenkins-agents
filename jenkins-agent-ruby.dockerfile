@@ -1,4 +1,4 @@
-FROM salemove/jnlp-docker:17.03.1
+FROM salemove/jenkins-agent-docker:17.03.1
 
 # skip installing gem documentation
 RUN mkdir -p /usr/local/etc \
