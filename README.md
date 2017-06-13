@@ -23,3 +23,9 @@ volumes:
 Agent based on [salemove/jenkins-agent-docker](https://github.com/salemove/docker-jenkins-agents) and [library/ruby](https://hub.docker.com/_/ruby/).
 
 Agent includes common tools and libraries to build Ruby application Docker images.
+
+## jenkins-agent-python
+
+Agent based on [salemove/jenkins-agent-docker](https://github.com/salemove/docker-jenkins-agents) and [library/python](https://hub.docker.com/_/python/).
+
+Agent includes common tools and libraries to build Python 3 application Docker images.
