@@ -18,8 +18,8 @@ volumes:
     path: /var/run/docker.sock
 ```
 
-## jenkins-agent-run
+## jenkins-agent-ruby
 
-Agent based on [salemove/jenkins-agent-docker](https://github.com/salemove/docker-jenkins-agents) and [library/ruby](https://hub.docker.com/_/ruby/). 
+Agent based on [salemove/jenkins-agent-docker](https://github.com/salemove/docker-jenkins-agents) and [library/ruby](https://hub.docker.com/_/ruby/).
 
 Agent includes common tools and libraries to build Ruby application Docker images.
