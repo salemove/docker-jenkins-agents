@@ -41,6 +41,7 @@ RUN set -ex \
 		procps \
 		readline-dev \
 		ruby \
+		sqlite \
 		tar \
 		yaml-dev \
 		zlib-dev \
