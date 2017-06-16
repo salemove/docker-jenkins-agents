@@ -111,5 +111,11 @@ ENV PATH $BUNDLE_BIN:$PATH
 RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 	&& chmod 777 "$GEM_HOME" "$BUNDLE_BIN"
 
-RUN apk add --no-cache postgresql-client
+RUN apk add --no-cache postgresql-client nodejs cmake ffmpeg-dev
 
+RUN git clone https://github.com/acoustid/chromaprint.git \
+  && cd chromaprint \
+  && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TOOLS=ON . \
+  && make \
+  && make install \
+  && cd ..
