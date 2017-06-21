@@ -126,5 +126,6 @@ RUN apk add --no-cache \
   postgresql-client \
   nodejs \
   tzdata \
-  geoip-dev
+  geoip-dev \
+  curl
 
