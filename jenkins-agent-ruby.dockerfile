@@ -111,11 +111,20 @@ ENV PATH $BUNDLE_BIN:$PATH
 RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 	&& chmod 777 "$GEM_HOME" "$BUNDLE_BIN"
 
-RUN apk add --no-cache postgresql-client nodejs cmake ffmpeg-dev tzdata
 
-RUN git clone https://github.com/acoustid/chromaprint.git \
+# Install common libraries used to build binary gems
+
+RUN apk add --no-cache cmake ffmpeg-dev \
+  && git clone https://github.com/acoustid/chromaprint.git \
   && cd chromaprint \
   && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TOOLS=ON . \
   && make \
   && make install \
   && cd ..
+
+RUN apk add --no-cache \
+  postgresql-client \
+  nodejs \
+  tzdata \
+  geoip-dev
+
