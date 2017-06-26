@@ -111,9 +111,11 @@ RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 
 # Install common libraries used to build binary gems
 
+RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/v3.4/main \
+  postgresql-dev=9.5.7-r0 \
+  postgresql-client=9.5.7-r0
+
 RUN apk add --no-cache \
-  postgresql-client \
-  postgresql-dev \
   nodejs \
   tzdata \
   geoip-dev \
