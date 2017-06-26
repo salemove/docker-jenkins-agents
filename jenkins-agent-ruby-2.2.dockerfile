@@ -113,6 +113,7 @@ RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 
 RUN apk add --no-cache \
   postgresql-client \
+  postgresql-dev \
   nodejs \
   tzdata \
   geoip-dev \
