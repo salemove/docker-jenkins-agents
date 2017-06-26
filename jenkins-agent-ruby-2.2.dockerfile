@@ -119,5 +119,6 @@ RUN apk add --no-cache \
   nodejs \
   tzdata \
   geoip-dev \
-  curl
+  curl \
+  g++
 
