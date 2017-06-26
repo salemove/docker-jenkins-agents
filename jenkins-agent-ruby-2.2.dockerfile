@@ -89,7 +89,6 @@ RUN set -ex \
 		yaml-dev \
 		procps \
 		zlib-dev \
-	&& apk del .ruby-builddeps \
 	&& cd / \
 	&& rm -r /usr/src/ruby \
 	\
