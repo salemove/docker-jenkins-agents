@@ -120,5 +120,6 @@ RUN apk add --no-cache \
   tzdata \
   geoip-dev \
   curl \
-  g++
+  g++ \
+  sqlite-dev
 
