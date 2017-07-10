@@ -1,4 +1,4 @@
-FROM salemove/jenkins-agent-docker:17.03.1
+FROM salemove/jenkins-agent-python:3.6.1
 
 # From https://github.com/nodejs/docker-node/blob/f131cc81c04968f1a60092c5efef54ea276d8b20/8.1/alpine/Dockerfile
 
