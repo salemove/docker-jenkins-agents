@@ -1,4 +1,4 @@
-FROM salemove/jenkins-agent-docker:17.03.1
+FROM salemove/jenkins-agent-docker:17.09.0
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH

@@ -1,4 +1,4 @@
-FROM salemove/jenkins-agent-docker:17.03.1
+FROM salemove/jenkins-agent-docker:17.09.0
 
 RUN apk add --no-cache python make g++
 
