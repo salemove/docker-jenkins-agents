@@ -1,4 +1,4 @@
-FROM jenkinsci/jnlp-slave:3.7-1-alpine
+FROM jenkinsci/jnlp-slave:alpine
 
 USER root
 
