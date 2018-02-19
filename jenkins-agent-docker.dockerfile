@@ -2,12 +2,21 @@ FROM jenkinsci/jnlp-slave:3.16-1-alpine
 
 USER root
 
-RUN apk add --no-cache \
-		ca-certificates \
-		openssh-client
+###############################################################################################################
+# START https://github.com/docker-library/docker/blob/b9fd686dac473fb71ffb426a9ef8e0467208dd2f/17.12/Dockerfile
+###############################################################################################################
 
-ENV DOCKER_CHANNEL edge
-ENV DOCKER_VERSION 17.05.0-ce
+RUN apk add --no-cache \
+		ca-certificates
+
+# set up nsswitch.conf for Go's "netgo" implementation (which Docker explicitly uses)
+# - https://github.com/docker/docker-ce/blob/v17.09.0-ce/components/engine/hack/make.sh#L149
+# - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
+# - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
+RUN [ ! -e /etc/nsswitch.conf ] && echo 'hosts: files dns' > /etc/nsswitch.conf
+
+ENV DOCKER_CHANNEL stable
+ENV DOCKER_VERSION 17.12.0-ce
 # TODO ENV DOCKER_SHA256
 # https://github.com/docker/docker-ce/blob/5b073ee2cf564edee5adca05eee574142f7627bb/components/packaging/static/hash_files !!
 # (no SHA file artifacts on download.docker.com yet as of 2017-06-07 though)
@@ -26,14 +35,16 @@ RUN set -ex; \
 	apkArch="$(apk --print-arch)"; \
 	case "$apkArch" in \
 		x86_64) dockerArch='x86_64' ;; \
+		armhf) dockerArch='armel' ;; \
+		aarch64) dockerArch='aarch64' ;; \
+		ppc64le) dockerArch='ppc64le' ;; \
+		s390x) dockerArch='s390x' ;; \
 		*) echo >&2 "error: unsupported architecture ($apkArch)"; exit 1 ;;\
 	esac; \
 	\
-	if ! curl -fL -o docker.tgz "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/${dockerArch}/docker-${DOCKER_VERSION}-${dockerArch}.tgz"; then \
-		if ! curl -fL -o docker.tgz "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/${dockerArch}/docker-${DOCKER_VERSION}.tgz"; then \
-			echo >&2 "error: failed to download 'docker-${DOCKER_VERSION}' from '${DOCKER_CHANNEL}' for '${dockerArch}'"; \
-			exit 1; \
-		fi; \
+	if ! curl -fL -o docker.tgz "https://download.docker.com/linux/static/${DOCKER_CHANNEL}/${dockerArch}/docker-${DOCKER_VERSION}.tgz"; then \
+		echo >&2 "error: failed to download 'docker-${DOCKER_VERSION}' from '${DOCKER_CHANNEL}' for '${dockerArch}'"; \
+		exit 1; \
 	fi; \
 	\
 	tar --extract \
@@ -48,7 +59,12 @@ RUN set -ex; \
 	dockerd -v; \
 	docker -v
 
-COPY scripts/docker-entrypoint.sh /usr/local/bin/
+COPY modprobe.sh /usr/local/bin/modprobe
+COPY docker-entrypoint.sh /usr/local/bin/
+
+#############################################################################################################
+# END https://github.com/docker-library/docker/blob/b9fd686dac473fb71ffb426a9ef8e0467208dd2f/17.12/Dockerfile
+#############################################################################################################
 
 RUN echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" > /etc/ssh/ssh_known_hosts
 
