@@ -1,10 +1,10 @@
-FROM jenkinsci/jnlp-slave:3.7-1-alpine
+FROM jenkinsci/jnlp-slave:3.16-1-alpine
 
 USER root
 
 RUN apk add --no-cache \
 		ca-certificates \
-		openssh
+		openssh-client
 
 ENV DOCKER_CHANNEL edge
 ENV DOCKER_VERSION 17.05.0-ce
