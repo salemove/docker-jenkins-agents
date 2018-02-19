@@ -59,8 +59,8 @@ RUN set -ex; \
 	dockerd -v; \
 	docker -v
 
-COPY modprobe.sh /usr/local/bin/modprobe
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY scripts/modprobe.sh /usr/local/bin/modprobe
+COPY scripts/docker-entrypoint.sh /usr/local/bin/
 
 #############################################################################################################
 # END https://github.com/docker-library/docker/blob/b9fd686dac473fb71ffb426a9ef8e0467208dd2f/17.12/Dockerfile
