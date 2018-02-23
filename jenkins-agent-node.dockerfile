@@ -5,7 +5,7 @@ RUN apk add --no-cache python make g++
 # From https://raw.githubusercontent.com/nodejs/docker-node/bb200caf20280e436dedc56a5f194fd21e684758/6.11/alpine/Dockerfile
 
 ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 6.11.1
+ENV NODE_VERSION 6.13.0
 
 RUN addgroup -g 1000 node \
     && adduser -u 1000 -G node -s /bin/sh -D node \
