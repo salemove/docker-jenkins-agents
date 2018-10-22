@@ -112,8 +112,8 @@ RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 # Install common libraries used to build binary gems
 
 RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/v3.4/main \
-  postgresql-dev=9.5.11-r0 \
-  postgresql-client=9.5.11-r0
+  postgresql-dev=9.5.13-r0 \
+  postgresql-client=9.5.13-r0
 
 RUN apk add --no-cache \
   nodejs \
@@ -122,4 +122,3 @@ RUN apk add --no-cache \
   curl \
   g++ \
   sqlite-dev
-
