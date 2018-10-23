@@ -26,7 +26,7 @@ def buildAgentImage = { agentName, minorVersion=null ->
     dockerImage = docker.build(imageName, "--pull -f ${dockerFile} .")
 
     if (BRANCH_NAME == MAIN_BRANCH) {
-      stage('Publish ${dockerImage.imageName()}') {
+      stage("Publish ${dockerImage.imageName()}") {
         generateTags(version).each { tag ->
           echo("Publishing docker image ${dockerImage.imageName()} with tag ${tag}")
 
