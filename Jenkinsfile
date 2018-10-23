@@ -27,7 +27,10 @@ def buildAgentImage = { agentName ->
       stage('Publish ${dockerImage.imageName()}') {
         generateTags(version).each { tag ->
           echo("Publishing docker image ${dockerImage.imageName()} with tag ${tag}")
-          dockerImage.push(tag)
+
+          docker.withRegistry(DOCKER_REGISTRY_URL, DOCKER_REGISTRY_CREDENTIALS_ID) {
+            dockerImage.push(tag)
+          }
         }
       }
     }
