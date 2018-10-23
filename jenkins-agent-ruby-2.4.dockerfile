@@ -7,9 +7,9 @@ RUN mkdir -p /usr/local/etc \
 		echo 'update: --no-document'; \
 	} >> /usr/local/etc/gemrc
 
-ENV RUBY_MAJOR 2.2
-ENV RUBY_VERSION 2.2.7
-ENV RUBY_DOWNLOAD_SHA256 234c8aee6543da9efd67008e6e7ee740d41ed57a52e797f65043c3b5ec3bcb53
+ENV RUBY_MAJOR 2.4
+ENV RUBY_VERSION 2.4.5
+ENV RUBY_DOWNLOAD_SHA256 2f0cdcce9989f63ef7c2939bdb17b1ef244c4f384d85b8531d60e73d8cc31eeb
 ENV RUBYGEMS_VERSION 2.6.12
 
 # some of ruby's build scripts are written in ruby
@@ -25,6 +25,7 @@ RUN set -ex \
 		ca-certificates \
 		coreutils \
 		dpkg-dev dpkg \
+		g++ \
 		gcc \
 		gdbm-dev \
 		glib-dev \
@@ -35,11 +36,13 @@ RUN set -ex \
 		linux-headers \
 		make \
 		ncurses-dev \
-		openssl \
-		openssl-dev \
+		libressl-dev \
+		libressl \
 		procps \
+		postgresql-dev \
 		readline-dev \
 		ruby \
+		sqlite-dev \
 		tar \
 		yaml-dev \
 		zlib-dev \
@@ -85,7 +88,6 @@ RUN set -ex \
 		bzip2 \
 		ca-certificates \
 		libffi-dev \
-		openssl-dev \
 		yaml-dev \
 		procps \
 		zlib-dev \
@@ -94,7 +96,7 @@ RUN set -ex \
 	\
 	&& gem update --system "$RUBYGEMS_VERSION"
 
-ENV BUNDLER_VERSION 1.15.1
+ENV BUNDLER_VERSION 1.16.6
 
 RUN gem install bundler --version "$BUNDLER_VERSION"
 
@@ -109,16 +111,32 @@ ENV PATH $BUNDLE_BIN:$PATH
 RUN mkdir -p "$GEM_HOME" "$BUNDLE_BIN" \
 	&& chmod 777 "$GEM_HOME" "$BUNDLE_BIN"
 
+
 # Install common libraries used to build binary gems
 
-RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/v3.4/main \
-  postgresql-dev=9.5.13-r0 \
-  postgresql-client=9.5.13-r0
+RUN apk add --no-cache cmake ffmpeg-dev sox \
+  && git clone https://github.com/acoustid/chromaprint.git \
+  && cd chromaprint \
+  && cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TOOLS=ON . \
+  && make \
+  && make install \
+  && cd ..
+
+RUN set -ex \
+  && apk add --no-cache --virtual .build-deps wget \
+  && apk add --no-cache ca-certificates \
+  \
+  && cd /tmp \
+  && wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip \
+  && unzip ngrok-stable-linux-amd64.zip \
+  && install -v -D ngrok /bin/ngrok \
+  && rm -f ngrok-stable-linux-amd64.zip ngrok \
+  \
+  && apk del .build-deps
 
 RUN apk add --no-cache \
+  postgresql-client \
   nodejs \
   tzdata \
   geoip-dev \
-  curl \
-  g++ \
-  sqlite-dev
+  curl
