@@ -4,6 +4,8 @@ def MAIN_BRANCH                    = 'master'
 def DOCKER_REGISTRY_URL            = 'https://registry.hub.docker.com'
 def DOCKER_REGISTRY_CREDENTIALS_ID = '6992a9de-fab7-4932-9907-3aba4a70c4c0'
 def IMAGE_PREFIX                   = 'salemove'
+def CPU_LIMIT_PER_BUILD            = 1
+def CPU_LIMIT_TOTAL                = 6
 
 def generateTags = { version ->
   def major, minor, patch
@@ -23,7 +25,7 @@ def buildAgentImage = { agentName, minorVersion=null ->
   imageName = "${IMAGE_PREFIX}/${agentName}"
 
   ansiColor('xterm') {
-    dockerImage = docker.build(imageName, "--pull -f ${dockerFile} .")
+    dockerImage = docker.build(imageName, "--pull -f ${dockerFile} --cpu-period 100000 --cpu-quota ${CPU_LIMIT_PER_BUILD * 100000} .")
 
     if (BRANCH_NAME == MAIN_BRANCH) {
       stage("Publish ${dockerImage.imageName()}") {
@@ -40,7 +42,13 @@ def buildAgentImage = { agentName, minorVersion=null ->
 }
 
 withResultReporting(slackChannel: '#tm-engage') {
-  inDockerAgent() {
+  inDockerAgent(
+    containers: [agentContainer(
+      image: 'salemove/jenkins-agent-docker:17.12.0',
+      resourceRequestCpu: CPU_LIMIT_TOTAL.toString(),
+      resourceLimitCpu: CPU_LIMIT_TOTAL.toString()
+    )]
+  ) {
     stage('Checkout code') {
       checkout(scm)
     }
