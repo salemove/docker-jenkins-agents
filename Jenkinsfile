@@ -22,7 +22,7 @@ def buildAgentImage = { agentName, minorVersion=null ->
   version = readFile("${agentName}${fileSuffix}.version").trim()
   dockerFile = "${agentName}${fileSuffix}.dockerfile"
 
-  imageName = "${IMAGE_PREFIX}/${agentName}"
+  imageName = "${IMAGE_PREFIX}/${agentName}:${version}"
 
   ansiColor('xterm') {
     dockerImage = docker.build(imageName, "--pull -f ${dockerFile} --cpu-period 100000 --cpu-quota ${CPU_LIMIT_PER_BUILD * 100000} .")
