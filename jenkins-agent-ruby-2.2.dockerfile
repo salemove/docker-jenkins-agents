@@ -117,6 +117,7 @@ RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/v3.4/ma
 
 RUN apk add --no-cache \
   nodejs \
+  nodejs-npm \
   tzdata \
   geoip-dev \
   curl \

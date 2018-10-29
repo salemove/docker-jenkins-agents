@@ -145,6 +145,7 @@ RUN set -ex \
 RUN apk add --no-cache \
   postgresql-client \
   nodejs \
+  nodejs-npm \
   tzdata \
   geoip-dev \
   curl
