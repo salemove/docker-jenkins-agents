@@ -10,7 +10,7 @@ def CPU_LIMIT_TOTAL                = 6
 def generateTags = { version, revision ->
   def (major, minor, patch) = version.tokenize('.')
 
-  ["${major}.${minor}", version, "${version}+${revision}"]
+  ["${major}.${minor}", version, "${version}-${revision}"]
 }
 
 def buildAgentImage = { agentName, minorVersion=null ->
@@ -19,7 +19,7 @@ def buildAgentImage = { agentName, minorVersion=null ->
   def revision = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true)
   def dockerFile = "${agentName}${fileSuffix}.dockerfile"
 
-  def imageName = "${IMAGE_PREFIX}/${agentName}:${version}+${revision}"
+  def imageName = "${IMAGE_PREFIX}/${agentName}:${version}-${revision}"
 
   ansiColor('xterm') {
     def dockerImage = docker.build(imageName, "--pull -f ${dockerFile} --cpu-period 100000 --cpu-quota ${CPU_LIMIT_PER_BUILD * 100000} .")
