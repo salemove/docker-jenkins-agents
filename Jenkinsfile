@@ -7,29 +7,26 @@ def IMAGE_PREFIX                   = 'salemove'
 def CPU_LIMIT_PER_BUILD            = 1
 def CPU_LIMIT_TOTAL                = 6
 
-def generateTags = { version ->
-  def major, minor, patch
+def generateTags = { version, revision ->
+  def (major, minor, patch) = version.tokenize('.')
 
-  (major, minor, patch) = version.tokenize('.')
-
-  ["${major}.${minor}", version]
+  ["${major}.${minor}", version, "${version}-${revision}"]
 }
 
 def buildAgentImage = { agentName, minorVersion=null ->
-  def dockerFile, fileSuffix, imageName, dockerImage, version
+  def fileSuffix = minorVersion ? "-${minorVersion}" : ""
+  def version = readFile("${agentName}${fileSuffix}.version").trim()
+  def revision = sh(script: 'git log -n 1 --pretty=format:\'%h\'', returnStdout: true)
+  def dockerFile = "${agentName}${fileSuffix}.dockerfile"
 
-  fileSuffix = minorVersion ? "-${minorVersion}" : ""
-  version = readFile("${agentName}${fileSuffix}.version").trim()
-  dockerFile = "${agentName}${fileSuffix}.dockerfile"
-
-  imageName = "${IMAGE_PREFIX}/${agentName}:${version}"
+  def imageName = "${IMAGE_PREFIX}/${agentName}:${version}-${revision}"
 
   ansiColor('xterm') {
-    dockerImage = docker.build(imageName, "--pull -f ${dockerFile} --cpu-period 100000 --cpu-quota ${CPU_LIMIT_PER_BUILD * 100000} .")
+    def dockerImage = docker.build(imageName, "--pull -f ${dockerFile} --cpu-period 100000 --cpu-quota ${CPU_LIMIT_PER_BUILD * 100000} .")
 
     if (BRANCH_NAME == MAIN_BRANCH) {
       stage("Publish ${dockerImage.imageName()}") {
-        generateTags(version).each { tag ->
+        generateTags(version, revision).each { tag ->
           echo("Publishing docker image ${dockerImage.imageName()} with tag ${tag}")
 
           docker.withRegistry(DOCKER_REGISTRY_URL, DOCKER_REGISTRY_CREDENTIALS_ID) {
