@@ -8,24 +8,20 @@ def CPU_LIMIT_PER_BUILD            = 1
 def CPU_LIMIT_TOTAL                = 6
 
 def generateTags = { version ->
-  def major, minor, patch
-
-  (major, minor, patch) = version.tokenize('.')
+  def (major, minor, patch) = version.tokenize('.')
 
   ["${major}.${minor}", version]
 }
 
 def buildAgentImage = { agentName, minorVersion=null ->
-  def dockerFile, fileSuffix, imageName, dockerImage, version
+  def fileSuffix = minorVersion ? "-${minorVersion}" : ""
+  def version = readFile("${agentName}${fileSuffix}.version").trim()
+  def dockerFile = "${agentName}${fileSuffix}.dockerfile"
 
-  fileSuffix = minorVersion ? "-${minorVersion}" : ""
-  version = readFile("${agentName}${fileSuffix}.version").trim()
-  dockerFile = "${agentName}${fileSuffix}.dockerfile"
-
-  imageName = "${IMAGE_PREFIX}/${agentName}:${version}"
+  def imageName = "${IMAGE_PREFIX}/${agentName}:${version}"
 
   ansiColor('xterm') {
-    dockerImage = docker.build(imageName, "--pull -f ${dockerFile} --cpu-period 100000 --cpu-quota ${CPU_LIMIT_PER_BUILD * 100000} .")
+    def dockerImage = docker.build(imageName, "--pull -f ${dockerFile} --cpu-period 100000 --cpu-quota ${CPU_LIMIT_PER_BUILD * 100000} .")
 
     if (BRANCH_NAME == MAIN_BRANCH) {
       stage("Publish ${dockerImage.imageName()}") {
