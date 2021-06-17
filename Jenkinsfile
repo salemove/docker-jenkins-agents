@@ -38,7 +38,7 @@ def buildAgentImage = { agentName, minorVersion=null ->
   }
 }
 
-withResultReporting(slackChannel: '#tm-engage') {
+withResultReporting(slackChannel: '#tm-inf') {
   inDockerAgent(
     containers: [agentContainer(
       image: 'salemove/jenkins-agent-docker:17.12.0',
