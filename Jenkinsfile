@@ -37,13 +37,15 @@ def buildAgentImage = { agentName, minorVersion=null ->
 }
 
 withResultReporting(slackChannel: '#tm-inf') {
-  inDockerAgent(containers: [agentContainer(image: 'salemove/jenkins-agent-docker:17.12.0')]) {
+  inDockerAgent(containers: [agentContainer(image: 'salemove/jenkins-agent-docker:19.03.15')]) {
     stage('Checkout code') {
       checkout(scm)
     }
 
     stage("Build jenkins-agent-docker") {
-      buildAgentImage('jenkins-agent-docker')
+      withEnv(['DOCKER_BUILDKIT=1']) {
+        buildAgentImage('jenkins-agent-docker')
+      }
     }
   }
 }
