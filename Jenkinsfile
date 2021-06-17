@@ -50,17 +50,8 @@ withResultReporting(slackChannel: '#tm-inf') {
       checkout(scm)
     }
 
-    // prerequisite for other images
     stage("Build jenkins-agent-docker") {
       buildAgentImage('jenkins-agent-docker')
     }
-
-    parallel(
-      "Node.js": { buildAgentImage('jenkins-agent-node') },
-      "Python": { buildAgentImage('jenkins-agent-python') },
-      "Ruby 2.2": { buildAgentImage('jenkins-agent-ruby', '2.2') },
-      "Ruby 2.4": { buildAgentImage('jenkins-agent-ruby', '2.4') },
-      "Ruby 2.5": { buildAgentImage('jenkins-agent-ruby', '2.5') }
-    )
   }
 }
